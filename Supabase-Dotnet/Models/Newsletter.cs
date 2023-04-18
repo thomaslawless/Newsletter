@@ -19,7 +19,7 @@ public class Newsletter : BaseModel
     public string Description { get; set; }
 
 	[Column("read_time")]
-    public string ReadTime { get; set; }
+    public int ReadTime { get; set; }
 
 	[Column("created_at")]
 	public DateTime CreateedAt { get; set; }

@@ -11,8 +11,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<Supabase.Client>(_ =>
     new Supabase.Client(
-            builder.Configuration["SupabaseUrl"],
-            builder.Configuration["SupabaseKey"],
+            builder.Configuration["https://oiwoswtksltxzxfjpdif.supabase.co"],
+            builder.Configuration["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pd29zd3Rrc2x0eHp4ZmpwZGlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE3NTc1ODgsImV4cCI6MTk5NzMzMzU4OH0.9NbCd3A2FzBd3RP2n9ZpQUYnO6GCnJQi88VZTsuXrY8"],
             new SupabaseOptions
             {
                 AutoRefreshToken = true,
@@ -31,16 +31,59 @@ if (!app.Environment.IsDevelopment())
 
 app.MapPost("/newsletters",
     async (
-        CreateNewsletterRequest request, Supabase.Client client) =>
+        CreateNewsletterRequest request,
+         Supabase.Client client) =>
     {
         var newsletter = new Newsletter
         {
             Name = request.Name,
             Description = request.Description,
             ReadTime = request.ReadTime
-        }
+        };
+
+        var response = await client.From<Newsletter>().Insert(newsletter);
+
+        var newNewsletter = response.Models.First();
+
+        return Results.Ok(newNewsletter.Id);
 });
 
+app.MapGet("/newsletters/{id}", async (long id, Supabase.Client client) =>
+{
+    var response = await client
+        .From<Newsletter>()
+        .Where(n => n.Id == id)
+        .Get();
+    
+    var newsletter = response.Models.FirstOrDefault();
+
+    if (newsletter is null)
+    {
+        return Results.NotFound();
+    }
+
+    var newsletterResponse = new CreateNewsletterResponse
+    {
+        Id = newsletter.Id,
+        Name = newsletter.Name,
+        Description = newsletter.Description,
+        ReadTime = newsletter.ReadTime,
+        CreatedAt = newsletter.CreateedAt
+    };
+
+    return Results.Ok(newsletterResponse);
+});
+
+
+app.MapDelete("/newsletters/{id}", async (long id, Supabase.Client client) =>
+{
+    await client
+    .From<Newsletter>()
+    .Where(n => n.Id == id)
+    .Delete();
+
+    return Results.NoContent();
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
