@@ -13,10 +13,10 @@ public class Newsletter : BaseModel
 	public long Id { get; set; }
 
 	[Column("name")]
-	public string Name { get; set; }
+	public string? Name { get; set; }
 
 	[Column("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
 	[Column("read_time")]
     public int ReadTime { get; set; }
