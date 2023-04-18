@@ -12,7 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<Supabase.Client>(_ =>
     new Supabase.Client(
             builder.Configuration["https://oiwoswtksltxzxfjpdif.supabase.co"],
-            builder.Configuration["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pd29zd3Rrc2x0eHp4ZmpwZGlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE3NTc1ODgsImV4cCI6MTk5NzMzMzU4OH0.9NbCd3A2FzBd3RP2n9ZpQUYnO6GCnJQi88VZTsuXrY8"],
+            builder.Configuration["key"],
             new SupabaseOptions
             {
                 AutoRefreshToken = true,
